@@ -10,6 +10,7 @@ setup(
     entry_points={
         'console_scripts': [
             'create-file=CLI_project.create_file:create',
+            'upload=CLI_project.create_file:upload',
         ],
     },
     install_requires=[
