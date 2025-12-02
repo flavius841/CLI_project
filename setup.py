@@ -1,19 +1,18 @@
-import setuptools
-from distutils.core import setup
-
+from setuptools import setup, find_packages
 
 setup(
     name='CLI_project',
-    version='0.0.0',
+    version='0.0.1',
     description='Example package for a CLI',
     author='Flavius Pintilie',
     author_email='flaviusepintilie@gmail.com',
-    packages=['CLI_project'],
+    packages=find_packages(),
     entry_points={
-        'console_scripts': ['cli-example=CLI_project.entry:cli_entry_point'],
+        'console_scripts': [
+            'create-file=CLI_project.create_file:create',
+        ],
     },
     install_requires=[
         'requests',
     ],
 )
-

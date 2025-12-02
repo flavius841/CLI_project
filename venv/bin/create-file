@@ -1,7 +1,7 @@
 #!/home/boo/Documents/CLI_Project/venv/bin/python3
 import sys
-from CLI_project.entry import cli_entry_point
+from CLI_project.create_file import create
 if __name__ == '__main__':
     if sys.argv[0].endswith('.exe'):
         sys.argv[0] = sys.argv[0][:-4]
-    sys.exit(cli_entry_point())
+    sys.exit(create())
