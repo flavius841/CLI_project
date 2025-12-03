@@ -11,12 +11,11 @@ setup(
         'console_scripts': [
             'create-file=CLI_project.create_file:create',
             'upload=CLI_project.create_file:upload',
-            'Help=CLI_project.create_file:open_help',
+            # 'cli=CLI_project.create_file:main',
+            'find=CLI_project.create_file:find_text_in_file',
         ],
     },
     install_requires=[
         'requests',
     ],
 )
-
-print("Type 'Help' to see available commands.")
