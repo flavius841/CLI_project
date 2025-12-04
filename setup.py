@@ -13,6 +13,7 @@ setup(
             'upload=CLI_project.create_file:upload',
             # 'cli=CLI_project.create_file:main',
             'find=CLI_project.create_file:find_text_in_file',
+            "file_editor=CLI_project.create_file:main",
         ],
     },
     install_requires=[
