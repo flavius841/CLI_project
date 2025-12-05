@@ -6,6 +6,15 @@ file = None
 
 def main():
     print("Welcome to my CLI project. Here you cand create edit and \nfind what you want in your text file \nType 'Help' to see available commands.")
+    message = input(">>>  ")
+    if message.lower() == "help":
+        open_help()
+    elif message.lower() == "create-file":
+        create()
+    elif message.lower() == "upload":
+        upload()
+    elif message.lower() == "find":
+        find_text_in_file()
 
 
 def create():
@@ -35,16 +44,6 @@ def find_file():
     else:
         print("That file does NOT exist.")
         return None
-
-
-def replace_text():
-    file = find_file()
-    if file is None:
-        return
-    message = input("Enter the text you want to replace:  ")
-    message = message.replace("\\n ", "\n")
-    file.write(message)
-    file.close()
 
 
 def find_text_in_file():
