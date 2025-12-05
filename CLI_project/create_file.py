@@ -1,6 +1,7 @@
 import requests
 import os
 from colorama import init, Fore, Style
+import keyboard
 
 file = None
 init(autoreset=True)
@@ -12,6 +13,20 @@ def main():
 
     while True:
         message = input(">>>  ")
+        commnads = ["help", "create-file", "upload",
+                    "find", "count", "rename", "exit"]
+        i = 0
+        arrowspressed = False
+
+        if keyboard.is_pressed("up"):
+            message = commnads[i]
+            i = i + 1
+            arrowspressed = True
+
+        elif keyboard.is_pressed("down"):
+            message = commnads[i]
+            i = i - 1
+            arrowspressed = True
 
         if message.lower() == "help":
             open_help()
@@ -23,6 +38,8 @@ def main():
             find_text_in_file()
         elif message.lower() == "count":
             Count()
+        elif message.lower() == "rename":
+            rename_file()
         elif message.lower() == "exit":
             print("Exiting the program. Goodbye!")
             break
@@ -142,3 +159,13 @@ def Count():
                 print("Invalid option. Please choose words, lines, or characters.")
     except FileNotFoundError:
         print("File does not exist.")
+
+
+def rename_file():
+    old_filename = input("Enter the current file name: ") + ".txt"
+    if not os.path.exists(old_filename):
+        print("File does not exist.")
+        return
+    new_filename = input("Enter the new file name: ") + ".txt"
+    os.rename(old_filename, new_filename)
+    print(f"File renamed to {new_filename} successfully!")
