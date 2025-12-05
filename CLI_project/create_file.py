@@ -1,20 +1,33 @@
 import requests
 import os
+from colorama import init, Fore, Style
 
 file = None
+init(autoreset=True)
 
 
 def main():
-    print("Welcome to my CLI project. Here you cand create edit and \nfind what you want in your text file \nType 'Help' to see available commands.")
-    message = input(">>>  ")
-    if message.lower() == "help":
-        open_help()
-    elif message.lower() == "create-file":
-        create()
-    elif message.lower() == "upload":
-        upload()
-    elif message.lower() == "find":
-        find_text_in_file()
+    print("Welcome to my CLI project. Here you cand create edit and \nfind what you want in your text "
+          "file \nType 'help' to see available commands or read more information.")
+
+    while True:
+        message = input(">>>  ")
+
+        if message.lower() == "help":
+            open_help()
+        elif message.lower() == "create-file":
+            create()
+        elif message.lower() == "upload":
+            upload()
+        elif message.lower() == "find":
+            find_text_in_file()
+        elif message.lower() == "count":
+            Count()
+        elif message.lower() == "exit":
+            print("Exiting the program. Goodbye!")
+            break
+        elif message.strip().lower() != "":
+            print("Invalid command. Type 'Help' to see available commands.")
 
 
 def create():
@@ -23,6 +36,7 @@ def create():
     filename = filename + ".txt"
     file = open(filename, "a")
     file.close()
+    print(f"File {filename} created successfully!")
 
 
 def upload():
@@ -33,6 +47,7 @@ def upload():
     message = message.replace("\\n ", "\n")
     file.write(message)
     file.close()
+    print("Text uploaded successfully!")
 
 
 def find_file():
@@ -77,15 +92,53 @@ def find_text_in_file():
 
 
 def open_help():
-    help_text = """
-    Available commands:
-    - create-file: Create a new text file.
-    - upload: Upload text to an existing file.
+    help_text = f"""
+    {Fore.CYAN}Available commands:{Style.RESET_ALL}
+    {Fore.GREEN}- create-file:{Style.RESET_ALL} Create a new text file.
+    {Fore.YELLOW}- upload:{Style.RESET_ALL} Upload text to an existing file.
         * when you upload text and want to go to a new line, use \\n
-    - find: Find text in a file and optionally replace it.
+    {Fore.MAGENTA}- find:{Style.RESET_ALL} Find text in a file and optionally replace it.
+    {Fore.BLUE}- count:{Style.RESET_ALL} Count words, lines, or characters in a file.
+    {Fore.RED}- exit:{Style.RESET_ALL} Exit the program.
+
+    {Fore.CYAN}Note:{Style.RESET_ALL} This CLI only works in the folder you are currently in.
+
     """
     print(help_text)
 
 
-# def main():
-#     print("Type 'Help' to see available commands.")
+def Count():
+    filename = input("Enter the file name: ") + ".txt"
+    message = input("Do you want to count (words/lines/characters): ")
+
+    try:
+        with open(filename, "r", encoding="utf-8") as file:
+            lines = file.readlines()
+            if message.lower() == "lines":
+                print(f"The file has {len(lines)} lines.")
+            elif message.lower() == "characters":
+                char_count = 0
+                message2 = input(
+                    "Do you want to count spaces as well? (yes/no): ")
+                if message2.lower() == "yes":
+                    spcace_included = True
+                else:
+                    spcace_included = False
+                for line in lines:
+                    if spcace_included:
+                        char_count = char_count + len(line)
+                    else:
+                        line_without_spaces = line.replace(
+                            " ", "").replace("\n", "")
+                        char_count = char_count + len(line_without_spaces)
+                print(f"The file has {char_count} characters.")
+            elif message.lower() == "words":
+                word_count = 0
+                for line in lines:
+                    words = line.split()
+                    word_count = word_count + len(words)
+                print(f"The file has {word_count} words.")
+            else:
+                print("Invalid option. Please choose words, lines, or characters.")
+    except FileNotFoundError:
+        print("File does not exist.")
