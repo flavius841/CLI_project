@@ -1,82 +1,113 @@
 # CLI_project
 
-This is a CLI project. It helps you to create files, find text, and edit them.
-NOTE: this CLI only works in the folder you are in.
+This is a **CLI (Command Line Interface) project** that allows you to create files, search for text, and edit them.
+**Note:** This CLI only works in the folder you are currently in.
 
+---
 
-To run it you need to have installed already python and git.
+## Prerequisites
 
-**How to install python on MacOS**
-Go to the official site: https://www.python.org/downloads/macos/
-Download the .pkg installer.
-Open it and follow the steps.
+To run this project, you need to have **Python** and **Git** installed on your system.
 
-Then you need to install pipx
-Run this commands:
-1. python3 -m pip install --user pipx
-2. python3 -m pipx ensurepath
+---
 
+## Installing Python
 
+### **macOS**
 
+1. Go to the official site: [https://www.python.org/downloads/macos/](https://www.python.org/downloads/macos/)
+2. Download the `.pkg` installer.
+3. Open it and follow the instructions.
 
-**How to install python on Linux:**
-Run this two commands in your terminal:
-        sudo apt update
-        sudo apt install python3
+Then, install **pipx**:
 
-Then you need to install pip and pipx
-Run this commands:
-1. sudo apt install python3-pip
-2. sudo apt update
-3. sudo apt install pipx
+```bash
+python3 -m pip install --user pipx
+python3 -m pipx ensurepath
+```
 
+Restart your terminal after running `ensurepath`.
 
-**How to install python on Windows:**
-1. Download Python
+---
 
-Go to the official site (safe + free):
+### **Linux (Ubuntu/Debian)**
 
-https://www.python.org/downloads/windows/
+Install Python:
 
-Click the latest "Python 3.x.x" Windows installer.
+```bash
+sudo apt update
+sudo apt install python3
+```
 
-2. Run the Installer
+Then, install pip and pipx:
 
-When the installer opens:
+```bash
+sudo apt install python3-pip
+sudo apt update
+sudo apt install pipx
+```
 
-✔ Very important: Check the box “Add Python to PATH”
-(If you miss this, Python won’t work in the terminal.)
+---
 
-Then click Install Now.
+### **Windows**
 
-Once Python and pip are installed:
+1. Download Python from: [https://www.python.org/downloads/windows/](https://www.python.org/downloads/windows/)
+2. Run the installer.
+   **Important:** Check the box **“Add Python to PATH”** before clicking “Install Now.”
+3. After installation, install pipx:
 
+```cmd
 python -m pip install --user pipx
 python -m pipx ensurepath
+```
 
-After running ensurepath, restart Command Prompt.
+Restart Command Prompt after running `ensurepath`.
 
+---
 
-**How to install Git on MacOS**
-If you have Homebrew installed: brew install git
+## Installing Git
 
+### **macOS**
 
-**How to install Git on Linux:**
-Just run this commands:
+If you have Homebrew:
+
+```bash
+brew install git
+```
+
+### **Linux (Ubuntu/Debian)**
+
+```bash
 sudo apt update
 sudo apt install git
+```
 
-**How to install Git on Windows:**
-Go to: https://git-scm.com/download/win
-Download the installer and follow the prompts (default options are fine).
+### **Windows**
 
+1. Go to: [https://git-scm.com/download/win](https://git-scm.com/download/win)
+2. Download the installer and follow the prompts (default options are fine).
 
-After you installed all this you can now use my CLI. Just run this command first: 
+---
+
+## Running the CLI
+
+After installing Python, pipx, and Git, you can install the CLI project:
+
+```bash
 pipx install git+https://github.com/flavius841/CLI_project.git
+```
 
-Now if you type file_editor in yor terminal or comand prompt you enter my application
+Now, you can run the CLI by typing:
 
+```bash
+file_editor
+```
 
+in your terminal or Command Prompt.
 
+---
 
+## Notes
 
+* This CLI only works in the folder you are currently in.
+* Make sure Python, pipx, and Git are installed correctly before running the CLI.
