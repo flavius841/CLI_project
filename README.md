@@ -5,6 +5,7 @@ This is a **CLI (Command Line Interface) project** that allows you to:
 2. Upload text to an existing file
 3. Find text in a file and optionally replace it
 4. Count words, lines, or characters in a file
+5. Rename an existing file
 ---
 **Note:** This CLI only works in the folder you are currently in.
 

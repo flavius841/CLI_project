@@ -1,10 +1,18 @@
 import requests
 import os
 from colorama import init, Fore, Style
-import keyboard
+from prompt_toolkit import prompt
+from prompt_toolkit.completion import WordCompleter
+
 
 file = None
 init(autoreset=True)
+commnads = ["help", "create-file", "upload",
+            "find", "count", "rename", "exit"]
+commands_find = ["yes", "no", "replace-everywhere",
+                 "delete", "delete-everywhere"]
+command_completer = WordCompleter(commnads, ignore_case=True)
+find_completer = WordCompleter(commands_find, ignore_case=True)
 
 
 def main():
@@ -12,37 +20,33 @@ def main():
           "file \nType 'help' to see available commands or read more information.")
 
     while True:
-        message = input(">>>  ")
-        commnads = ["help", "create-file", "upload",
-                    "find", "count", "rename", "exit"]
-        i = 0
-        arrowspressed = False
-
-        if keyboard.is_pressed("up"):
-            message = commnads[i]
-            i = i + 1
-            arrowspressed = True
-
-        elif keyboard.is_pressed("down"):
-            message = commnads[i]
-            i = i - 1
-            arrowspressed = True
+        message = prompt(">>> ", completer=command_completer).strip()
 
         if message.lower() == "help":
             open_help()
+
         elif message.lower() == "create-file":
             create()
+
         elif message.lower() == "upload":
             upload()
+
         elif message.lower() == "find":
             find_text_in_file()
+
         elif message.lower() == "count":
             Count()
+
         elif message.lower() == "rename":
             rename_file()
+
+        elif message.lower() == "delete":
+            delete_file()
+
         elif message.lower() == "exit":
             print("Exiting the program. Goodbye!")
             break
+
         elif message.strip().lower() != "":
             print("Invalid command. Type 'Help' to see available commands.")
 
@@ -81,6 +85,8 @@ def find_file():
 def find_text_in_file():
     filename = input("Enter the file name: ") + ".txt"
     search_text = input("Enter the text to find: ")
+    replace_all = False
+    message = ""
 
     try:
         with open(filename, "r", encoding="utf-8") as file:
@@ -91,10 +97,18 @@ def find_text_in_file():
                 if search_text in line:
                     print(f"Found on line {i+1}: {line.strip()}")
                     found = True
-                    message = input(
-                        "Do you want to replace this text? (yes/no): ")
-                    if message.lower() == "yes":
+
+                    if not replace_all:
+                        message = prompt(
+                            "Do you want to replace this text? (yes/no/replace-everywhere/delete/delete-everywhere): ",
+                            completer=find_completer).strip()
+
+                    if message.lower() == "yes" or not replace_all:
                         new_text = input("Enter the new text: ")
+                        lines[i] = line.replace(search_text, new_text)
+
+                    if message.lower() == "everywhere":
+                        replace_all = True
                         lines[i] = line.replace(search_text, new_text)
 
             if found:
@@ -117,6 +131,8 @@ def open_help():
     {Fore.MAGENTA}- find:{Style.RESET_ALL} Find text in a file and optionally replace it.
     {Fore.BLUE}- count:{Style.RESET_ALL} Count words, lines, or characters in a file.
     {Fore.RED}- exit:{Style.RESET_ALL} Exit the program.
+    {Fore.BLACK}- rename:{Style.RESET_ALL} Rename an existing file.
+    {Fore.LIGHTRED_EX}- delete:{Style.RESET_ALL} Delete an existing file.
 
     {Fore.CYAN}Note:{Style.RESET_ALL} This CLI only works in the folder you are currently in.
 
@@ -169,3 +185,13 @@ def rename_file():
     new_filename = input("Enter the new file name: ") + ".txt"
     os.rename(old_filename, new_filename)
     print(f"File renamed to {new_filename} successfully!")
+
+
+def delete_file():
+    filename = input(
+        "Enter the name of the file you want to delete: ") + ".txt"
+    if os.path.exists(filename):
+        os.remove(filename)
+        print(f"File {filename} deleted successfully!")
+    else:
+        print("File does not exist.")
