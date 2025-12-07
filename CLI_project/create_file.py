@@ -94,22 +94,28 @@ def find_text_in_file():
 
             found = False
             for i, line in enumerate(lines):
-                if search_text in line:
-                    print(f"Found on line {i+1}: {line.strip()}")
-                    found = True
+                for j, word in enumerate(line.split()):
+                    if search_text in word:
+                        print(
+                            f"Found on line {i+1} occurrence {j+1}: {line.strip()}")
+                        # if line.count(search_text) > 1:
 
-                    if not replace_all:
-                        message = prompt(
-                            "Do you want to replace this text? (yes/no/replace-everywhere/delete/delete-everywhere): ",
-                            completer=find_completer).strip()
+                        found = True
 
-                    if message.lower() == "yes" or not replace_all:
-                        new_text = input("Enter the new text: ")
-                        lines[i] = line.replace(search_text, new_text)
+                        if not replace_all:
+                            message = prompt(
+                                "Do you want to replace this text? (yes/no/replace-everywhere/delete/delete-everywhere): ",
+                                completer=find_completer).strip()
 
-                    if message.lower() == "everywhere":
-                        replace_all = True
-                        lines[i] = line.replace(search_text, new_text)
+                        if message.lower() == "yes" and not replace_all:
+                            new_text = input("Enter the new text: ")
+                            word.replace(search_text, new_text)
+                            lines[i] = line.replace(word[j], new_text)
+
+                        if message.lower() == "replace-everywhere":
+                            replace_all = True
+                            word.replace(search_text, new_text)
+                            lines[i] = line.replace(word[j], new_text)
 
             if found:
                 with open(filename, "w", encoding="utf-8") as file:
