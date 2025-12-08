@@ -7,6 +7,7 @@ This is a **CLI (Command Line Interface) project** that allows you to:
 4. Count words, lines, or characters in a file
 5. Rename an existing file
 6. Delete an existing file
+7. Show you text files from your folder
 ---
 **Note:** This CLI only works in the folder you are currently in.
 

@@ -9,7 +9,7 @@ setup(
     packages=find_packages(),
     entry_points={
         'console_scripts': [
-            "file_editor=CLI_project.create_file:main",
+            "file_editor=CLI_project.main_script:main",
         ],
     },
     install_requires=[

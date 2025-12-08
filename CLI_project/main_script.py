@@ -4,15 +4,23 @@ from colorama import init, Fore, Style
 from prompt_toolkit import prompt
 from prompt_toolkit.completion import WordCompleter
 
-
+current_folder = os.getcwd()
+all_items = os.listdir(current_folder)
 file = None
 init(autoreset=True)
 commnads = ["help", "create-file", "upload",
-            "find", "count", "rename", "exit"]
+            "find", "count", "rename", "exit", "delete", "show"]
 commands_find = ["yes", "no", "replace-everywhere",
                  "delete", "delete-everywhere"]
+commands_count = ["words", "lines", "characters"]
+files = [f for f in all_items if os.path.isfile(
+    os.path.join(current_folder, f)) and f.endswith(".txt")]
+txt_files = [f.replace(".txt", "") for f in files]
+
 command_completer = WordCompleter(commnads, ignore_case=True)
 find_completer = WordCompleter(commands_find, ignore_case=True)
+count_completer = WordCompleter(commands_count, ignore_case=True)
+list_completer = WordCompleter(txt_files, ignore_case=True)
 
 
 def main():
@@ -43,6 +51,9 @@ def main():
         elif message.lower() == "delete":
             delete_file()
 
+        elif message.lower() == "show":
+            show_files()
+
         elif message.lower() == "exit":
             print("Exiting the program. Goodbye!")
             break
@@ -53,7 +64,7 @@ def main():
 
 def create():
     global file
-    filename = input("Enter the name of the file you want to create: ")
+    filename = input("Enter the name of the file you want to create: ").strip()
     filename = filename + ".txt"
     file = open(filename, "a")
     file.close()
@@ -64,7 +75,7 @@ def upload():
     file = find_file()
     if file is None:
         return
-    message = input("Enter the text you want to upload:  ")
+    message = prompt("Enter the text you want to upload:  ")
     message = message.replace("\\n ", "\n")
     file.write(message)
     file.close()
@@ -72,7 +83,8 @@ def upload():
 
 
 def find_file():
-    filename = input("Enter the name of the file you want to edit: ")
+    filename = prompt("Enter the name of the file you want to edit: ",
+                      completer=list_completer).strip()
     filename = filename + ".txt"
     if os.path.exists(filename):
         print("File found! Opening it...")
@@ -83,46 +95,78 @@ def find_file():
 
 
 def find_text_in_file():
-    filename = input("Enter the file name: ") + ".txt"
+    filename = prompt("Enter the file name: ",
+                      completer=list_completer).strip() + ".txt"
     search_text = input("Enter the text to find: ")
+
     replace_all = False
-    message = ""
+    delete_all = False
+    new_text = None
 
     try:
         with open(filename, "r", encoding="utf-8") as file:
             lines = file.readlines()
 
-            found = False
-            for i, line in enumerate(lines):
-                for j, word in enumerate(line.split()):
-                    if search_text in word:
-                        print(
-                            f"Found on line {i+1} occurrence {j+1}: {line.strip()}")
-                        # if line.count(search_text) > 1:
+        found = False
 
-                        found = True
+        for i, line in enumerate(lines):
+            start = 0  # index in the line
 
-                        if not replace_all:
-                            message = prompt(
-                                "Do you want to replace this text? (yes/no/replace-everywhere/delete/delete-everywhere): ",
-                                completer=find_completer).strip()
+            while True:
+                pos = line.find(search_text, start)
+                if pos == -1:
+                    break  # no more occurrences on this line
 
-                        if message.lower() == "yes" and not replace_all:
-                            new_text = input("Enter the new text: ")
-                            word.replace(search_text, new_text)
-                            lines[i] = line.replace(word[j], new_text)
+                found = True
+                print(f"Found on line {i+1}, position {pos}: {line.strip()}")
 
-                        if message.lower() == "replace-everywhere":
-                            replace_all = True
-                            word.replace(search_text, new_text)
-                            lines[i] = line.replace(word[j], new_text)
+                # AUTO actions
+                if replace_all:
+                    line = line[:pos] + new_text + line[pos+len(search_text):]
+                    start = pos + len(new_text)
+                    continue
 
-            if found:
-                with open(filename, "w", encoding="utf-8") as file:
-                    file.writelines(lines)
+                if delete_all:
+                    line = line[:pos] + line[pos+len(search_text):]
+                    start = pos
+                    continue
 
-            if not found:
-                print("Text not found in the file.")
+                # Ask user for what to do for THIS occurrence
+                action = prompt(
+                    "Action? (yes/no/replace-everywhere/delete/delete-everywhere): ",
+                    completer=find_completer).lower().strip()
+
+                if action == "yes":
+                    new_text = input("Enter the new text: ")
+                    line = line[:pos] + new_text + line[pos+len(search_text):]
+                    start = pos + len(new_text)
+
+                elif action == "replace-everywhere":
+                    new_text = input("Enter the new text: ")
+                    replace_all = True
+                    line = line[:pos] + new_text + line[pos+len(search_text):]
+                    start = pos + len(new_text)
+
+                elif action == "delete":
+                    line = line[:pos] + line[pos+len(search_text):]
+                    start = pos
+
+                elif action == "delete-everywhere":
+                    delete_all = True
+                    line = line[:pos] + line[pos+len(search_text):]
+                    start = pos
+
+                else:
+                    # User chose "no"
+                    start = pos + len(search_text)
+
+            lines[i] = line  # store updated line
+
+        if found:
+            with open(filename, "w", encoding="utf-8") as file:
+                file.writelines(lines)
+        else:
+            print("Text not found.")
 
     except FileNotFoundError:
         print("File does not exist.")
@@ -141,14 +185,17 @@ def open_help():
     {Fore.LIGHTRED_EX}- delete:{Style.RESET_ALL} Delete an existing file.
 
     {Fore.CYAN}Note:{Style.RESET_ALL} This CLI only works in the folder you are currently in.
+    Write the exact file name when prompted (without .txt extension).
 
     """
     print(help_text)
 
 
 def Count():
-    filename = input("Enter the file name: ") + ".txt"
-    message = input("Do you want to count (words/lines/characters): ")
+    filename = prompt("Enter the file name: ",
+                      completer=list_completer).strip() + ".txt"
+    message = prompt("Do you want to count (words/lines/characters): ",
+                     completer=count_completer).strip()
 
     try:
         with open(filename, "r", encoding="utf-8") as file:
@@ -184,7 +231,8 @@ def Count():
 
 
 def rename_file():
-    old_filename = input("Enter the current file name: ") + ".txt"
+    old_filename = prompt("Enter the current file name: ",
+                          completer=list_completer).strip() + ".txt"
     if not os.path.exists(old_filename):
         print("File does not exist.")
         return
@@ -194,10 +242,16 @@ def rename_file():
 
 
 def delete_file():
-    filename = input(
-        "Enter the name of the file you want to delete: ") + ".txt"
+    filename = prompt(
+        "Enter the name of the file you want to delete: ", completer=list_completer).strip() + ".txt"
     if os.path.exists(filename):
         os.remove(filename)
         print(f"File {filename} deleted successfully!")
     else:
         print("File does not exist.")
+
+
+def show_files():
+    print("Text files in the current directory:")
+    for f in files:
+        print(f"- {f}")

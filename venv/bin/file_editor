@@ -1,6 +1,6 @@
 #!/home/boo/Documents/CLI_Project/venv/bin/python3
 import sys
-from CLI_project.create_file import main
+from CLI_project.main_script import main
 if __name__ == '__main__':
     if sys.argv[0].endswith('.exe'):
         sys.argv[0] = sys.argv[0][:-4]
