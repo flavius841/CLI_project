@@ -183,6 +183,7 @@ def open_help():
     {Fore.RED}- exit:{Style.RESET_ALL} Exit the program.
     {Fore.BLACK}- rename:{Style.RESET_ALL} Rename an existing file.
     {Fore.LIGHTRED_EX}- delete:{Style.RESET_ALL} Delete an existing file.
+    {Fore.LIGHTGREEN_EX}- show:{Style.RESET_ALL} Show you text files from your folder.
 
     {Fore.CYAN}Note:{Style.RESET_ALL} This CLI only works in the folder you are currently in.
     Write the exact file name when prompted (without .txt extension).
