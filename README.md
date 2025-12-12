@@ -19,6 +19,10 @@ This is a **CLI (Command Line Interface) project** that allows you to:
 To run this project, you need to have **Python** and **Git** installed on your system.
 
 ---
+If you already have Python and Git, you can jump to the Running the CLI section.
+
+
+---
 
 ## Installing Python
 
